@@ -229,6 +229,7 @@ body.nav-open .nav-toggle-inner::after {
 #home-hero {
   position: absolute;
   inset: 0;
+  pointer-events: none;
 }
 
 .hero-fallback {
@@ -405,35 +406,15 @@ body.nav-open .nav-toggle-inner::after {
   inset: 0;
 }
 
-.before-img {
-  opacity: 0;
-  transition: opacity 0.35s ease;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .work-card:hover .before-img,
-  .work-card:focus-visible .before-img {
-    opacity: 1;
-  }
-}
-
-@media (hover: none) {
-  .before-img {
-    opacity: 0 !important;
-  }
-}
-
 .work-chip {
   position: absolute;
   right: 12px;
   bottom: 12px;
-  background: rgba(11, 16, 26, 0.7);
-  color: var(--text);
-  padding: 6px 10px;
-  border-radius: 999px;
-  border: 1px solid var(--border);
-  font-size: 12px;
-  letter-spacing: 0.04em;
+  background: transparent;
+  border: none;
+  padding: 0;
+  width: 0;
+  height: 0;
 }
 
 .site-footer {

@@ -6,12 +6,6 @@ const brandNameEls = document.querySelectorAll("[data-brand-name]");
 const brandSubtitleEls = document.querySelectorAll("[data-brand-subtitle]");
 const homeTaglineEl = document.querySelector("[data-home-tagline]");
 const footerLinksEl = document.querySelector("[data-footer-links]");
-const hasHover =
-  typeof window !== "undefined" &&
-  "matchMedia" in window &&
-  window.matchMedia("(hover: hover) and (pointer: fine)").matches;
-
-let preloadObserver = null;
 
 function createSrcset(sources = []) {
   return sources.map((item) => `${item.src} ${item.w}w`).join(", ");
@@ -84,34 +78,6 @@ function buildNav(sections = []) {
   });
 }
 
-function registerPreloader() {
-  if (!hasHover || !("IntersectionObserver" in window)) return;
-  preloadObserver = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          const card = entry.target;
-          const beforeImg = card.querySelector(".before-img");
-          maybeLoadBefore(beforeImg);
-          preloadObserver?.unobserve(card);
-        }
-      });
-    },
-    { rootMargin: "0px 0px 200px 0px", threshold: 0.25 }
-  );
-}
-
-function maybeLoadBefore(img) {
-  if (!img || img.dataset.loaded === "1" || !hasHover) return;
-  const srcset = img.dataset.srcset;
-  const sizes = img.dataset.sizes;
-  const src = img.dataset.src;
-  if (srcset) img.srcset = srcset;
-  if (sizes) img.sizes = sizes;
-  if (src) img.src = src;
-  img.dataset.loaded = "1";
-}
-
 function createLightboxItem(work) {
   const after = {
     src: work.fullAfter.largest.src,
@@ -143,7 +109,6 @@ function createWorkCard(work, lightboxIndex) {
   card.setAttribute("aria-label", `${work.alt} — open lightbox`);
 
   const afterSrcset = createSrcset(work.previewAfter.sources);
-  const beforeSrcset = createSrcset(work.previewBefore.sources);
   const { width, height } = ratioSizeFromAspect(
     work.previewAfter.sources[work.previewAfter.sources.length - 1].w,
     work.previewAfter.aspect
@@ -172,29 +137,14 @@ function createWorkCard(work, lightboxIndex) {
   picture.appendChild(afterSource);
   picture.appendChild(afterImg);
 
-  const beforeImg = document.createElement("img");
-  beforeImg.className = "work-img before-img";
-  beforeImg.alt = `${work.alt} — before`;
-  beforeImg.loading = "lazy";
-  beforeImg.decoding = "async";
-  beforeImg.width = width;
-  beforeImg.height = height;
-  beforeImg.dataset.srcset = beforeSrcset;
-  beforeImg.dataset.sizes = work.previewBefore.sizes;
-  beforeImg.dataset.src = work.previewBefore.sources[0].src;
-
   preview.appendChild(picture);
-  preview.appendChild(beforeImg);
 
   const tag = document.createElement("span");
   tag.className = "work-chip";
-  tag.textContent = "After → Before";
+  tag.textContent = "";
 
   card.appendChild(preview);
-  card.appendChild(tag);
-
-  card.addEventListener("mouseenter", () => maybeLoadBefore(beforeImg));
-  card.addEventListener("focus", () => maybeLoadBefore(beforeImg));
+  // chip left empty intentionally (no label)
 
   card.addEventListener("click", (event) => {
     event.preventDefault();
@@ -207,8 +157,6 @@ function createWorkCard(work, lightboxIndex) {
       openLightbox(lightboxIndex);
     }
   });
-
-  if (preloadObserver) preloadObserver.observe(card);
   return card;
 }
 
@@ -258,7 +206,6 @@ async function initGallery() {
     applySiteCopy(site);
     buildNav(site.sections);
     renderFooter(site.contacts);
-    registerPreloader();
 
     if (sectionsContainer) sectionsContainer.innerHTML = "";
     const lightboxItems = [];

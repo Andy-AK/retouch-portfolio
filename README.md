@@ -11,48 +11,48 @@
 - `assets/vendor/photoswipe` и `assets/vendor/vanta` — локальные библиотеки.
 
 ## Как добавить новую работу
-1. Подготовьте файлы (именуйте последовательно, например `product-17-after-800.webp` и т.д.):
-   - Превью AFTER: 800w и 1200w webp → `assets/img/previews/<section>/...-after-800.webp` и `...-after-1200.webp`
-   - Превью BEFORE: 800w и 1200w webp → `assets/img/previews/<section>/...-before-*.webp`
-   - Full AFTER: 1600w и 2560w avif → `assets/img/full/<section>/...-after-*.avif`
-   - Full BEFORE: 1600w и 2560w avif → `assets/img/full/<section>/...-before-*.avif`
-   Секции: `product`, `fashion`, `cinematic`, `compositing`, `ai`.
+1. Файлы лежат по секциям (пример: `02_Product`, `03_Fashion`, `04_Cinematic`, `05_Compositing`, `06_AI-Assisted`) с префиксами `pro / fas / cin / com / ais`. Форматы сейчас `.jpg`:
+   - Превью AFTER: `assets/img/previews/<folder>/_after_800/<prefix>XXX_after_800.jpg` и `_after_1200/..._after_1200.jpg`  
+     (если 1200 нет, можно продублировать 800 или положить before1200 — скрипт подхватит)
+   - Превью BEFORE (для hover): берутся из `_before_1600` или `_before_2560` в `assets/img/full/<folder>/...`.
+   - Full AFTER: `_after_1600` и `_after_2560` в `assets/img/full/<folder>/`.
+   - Full BEFORE: `_before_1600` (имена без нижнего подчеркивания, например `pro001_before1600.jpg`) и `_before_2560`.
 2. Откройте `assets/data/works.json` и добавьте объект с нужными путями. Пример:
    ```json
    {
-     "id": "product-17",
-     "section": "product",
+     "id": "product-017",
+     "section": "product", // id из site.json
      "order": 17,
      "alt": "Product retouch 17",
      "previewAfter": {
        "sources": [
-         { "src": "assets/img/previews/product/product-17-after-800.webp", "w": 800 },
-         { "src": "assets/img/previews/product/product-17-after-1200.webp", "w": 1200 }
+         { "src": "assets/img/previews/02_Product/_after_800/pro017_after_800.jpg", "w": 800 },
+         { "src": "assets/img/previews/02_Product/_after_1200/pro017_after_1200.jpg", "w": 1200 }
        ],
        "sizes": "(min-width: 1280px) 24vw, (min-width: 960px) 32vw, (min-width: 640px) 48vw, 92vw",
        "aspect": "4/3"
      },
      "previewBefore": {
        "sources": [
-         { "src": "assets/img/previews/product/product-17-before-800.webp", "w": 800 },
-         { "src": "assets/img/previews/product/product-17-before-1200.webp", "w": 1200 }
+         { "src": "assets/img/full/02_Product/_before_1600/pro017_before1600.jpg", "w": 1600 },
+         { "src": "assets/img/full/02_Product/_before_2560/pro017_before_2560.jpg", "w": 2560 }
        ],
        "sizes": "(min-width: 1280px) 24vw, (min-width: 960px) 32vw, (min-width: 640px) 48vw, 92vw",
        "aspect": "4/3"
      },
      "fullAfter": {
        "sources": [
-         { "src": "assets/img/full/product/product-17-after-1600.avif", "w": 1600 },
-         { "src": "assets/img/full/product/product-17-after-2560.avif", "w": 2560 }
+         { "src": "assets/img/full/02_Product/_after_1600/pro017_after_1600.jpg", "w": 1600 },
+         { "src": "assets/img/full/02_Product/_after_2560/pro017_after_2560.jpg", "w": 2560 }
        ],
-       "largest": { "src": "assets/img/full/product/product-17-after-2560.avif", "w": 2560, "h": 1920 }
+       "largest": { "src": "assets/img/full/02_Product/_after_2560/pro017_after_2560.jpg", "w": 2560, "h": 1707 }
      },
      "fullBefore": {
        "sources": [
-         { "src": "assets/img/full/product/product-17-before-1600.avif", "w": 1600 },
-         { "src": "assets/img/full/product/product-17-before-2560.avif", "w": 2560 }
+         { "src": "assets/img/full/02_Product/_before_1600/pro017_before1600.jpg", "w": 1600 },
+         { "src": "assets/img/full/02_Product/_before_2560/pro017_before_2560.jpg", "w": 2560 }
        ],
-       "largest": { "src": "assets/img/full/product/product-17-before-2560.avif", "w": 2560, "h": 1920 }
+       "largest": { "src": "assets/img/full/02_Product/_before_2560/pro017_before_2560.jpg", "w": 2560, "h": 1707 }
      }
    }
    ```
@@ -63,7 +63,7 @@
 ```bash
 sips -g pixelWidth -g pixelHeight assets/img/full/product/product-17-after-2560.avif
 ```
-Возьмите значения в `largest.w` и `largest.h`.
+Возьмите значения в `largest.w` и `largest.h`. Файлы без подчеркивания (`before1600`) тоже читаются.
 
 ## Локальный запуск
 ```bash

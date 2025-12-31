@@ -3,13 +3,14 @@ import PhotoSwipeLightbox from "../vendor/photoswipe/photoswipe-lightbox.esm.js"
 let lightbox = null;
 let items = [];
 let toggleButton = null;
+let cleanupHover = null;
 
 function mapItem(item) {
   return {
     ...item,
     src: item.after.src,
     srcset: item.after.srcset,
-    msrc: item.preview,
+    msrc: item.after.src,
     width: item.after.w,
     height: item.after.h,
     w: item.after.w,
@@ -55,6 +56,40 @@ function toggleVariant(pswp) {
   updateToggleLabel(pswp);
 }
 
+function setHoverVariant(pswp, variant) {
+  if (!pswp) return;
+  const idx = pswp.currIndex;
+  setVariant(idx, variant);
+  pswp.refreshSlideContent(idx);
+  updateToggleLabel(pswp);
+}
+
+function bindHover(pswp) {
+  if (cleanupHover) cleanupHover();
+  const root = pswp?.element;
+  if (!root) return;
+
+  const onEnter = (ev) => {
+    if (ev.pointerType === "mouse") setHoverVariant(pswp, "before");
+  };
+  const onLeave = (ev) => {
+    if (ev.pointerType === "mouse") setHoverVariant(pswp, "after");
+  };
+
+  root.addEventListener("pointerenter", onEnter);
+  root.addEventListener("pointermove", onEnter);
+  root.addEventListener("pointerleave", onLeave);
+
+  cleanupHover = () => {
+    root.removeEventListener("pointerenter", onEnter);
+    root.removeEventListener("pointermove", onEnter);
+    root.removeEventListener("pointerleave", onLeave);
+    cleanupHover = null;
+  };
+
+  pswp.on("destroy", () => cleanupHover && cleanupHover());
+}
+
 export function initLightbox(data = []) {
   if (!data.length) return;
   items = data.map(mapItem);
@@ -71,7 +106,8 @@ export function initLightbox(data = []) {
       viewportSize.x < 900
         ? { top: 16, bottom: 16, left: 12, right: 12 }
         : { top: 28, bottom: 28, left: 36, right: 36 },
-    showHideAnimationType: "fade",
+    showHideAnimationType: "none",
+    zoomAnimationDuration: 0,
     wheelToZoom: false,
     initialZoomLevel: "fit",
     secondaryZoomLevel: 1,
@@ -94,7 +130,11 @@ export function initLightbox(data = []) {
   });
 
   lightbox.on("beforeOpen", resetAll);
-  lightbox.on("afterInit", () => updateToggleLabel(lightbox.pswp));
+  lightbox.on("afterInit", () => {
+    const pswp = lightbox.pswp;
+    updateToggleLabel(pswp);
+    bindHover(pswp);
+  });
   lightbox.on("change", () => {
     const pswp = lightbox.pswp;
     const idx = pswp.currIndex;
@@ -103,6 +143,7 @@ export function initLightbox(data = []) {
       pswp.refreshSlideContent(idx);
     }
     updateToggleLabel(pswp);
+    bindHover(pswp);
   });
 
   lightbox.init();

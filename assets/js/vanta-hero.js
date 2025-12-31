@@ -23,7 +23,6 @@
     window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   const isMobileLike = () =>
-    (window.matchMedia && window.matchMedia("(pointer: coarse)").matches) ||
     window.innerWidth < 768;
 
   function destroyVanta() {
@@ -42,13 +41,17 @@
       return;
     }
 
-    if (!window.VANTA || !window.VANTA.CELLS) return;
+    if (!window.VANTA || !window.VANTA.CELLS) {
+      window.setTimeout(initVanta, 150);
+      return;
+    }
 
     destroyVanta();
     vanta = window.VANTA.CELLS(VANTA_OPTIONS);
   }
 
   document.addEventListener("DOMContentLoaded", initVanta);
+  window.addEventListener("load", initVanta);
   window.addEventListener("beforeunload", destroyVanta);
 
   let t = null;
