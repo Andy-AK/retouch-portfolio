@@ -466,6 +466,31 @@ body.nav-open .nav-toggle-inner::after {
   color: #ffe1e1;
 }
 
+.pswp-hover-hint {
+  position: absolute;
+  right: 18px;
+  bottom: 16px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: rgba(12, 16, 26, 0.7);
+  color: var(--muted);
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  border: 1px solid var(--border);
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.pswp-hover-hint.is-hidden {
+  opacity: 0;
+}
+
+@media (hover: none) {
+  .pswp-hover-hint {
+    display: none;
+  }
+}
+
 @media (max-width: 1100px) {
   .hero-content {
     padding-top: 120px;

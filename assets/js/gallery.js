@@ -84,12 +84,14 @@ function createLightboxItem(work) {
     w: work.fullAfter.largest.w,
     h: work.fullAfter.largest.h,
     srcset: createSrcset(work.fullAfter.sources),
+    sizes: "100vw",
   };
   const before = {
     src: work.fullBefore.largest.src,
     w: work.fullBefore.largest.w,
     h: work.fullBefore.largest.h,
     srcset: createSrcset(work.fullBefore.sources),
+    sizes: "100vw",
   };
   return {
     id: work.id,

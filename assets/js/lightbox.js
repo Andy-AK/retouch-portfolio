@@ -4,6 +4,7 @@ let lightbox = null;
 let items = [];
 let toggleButton = null;
 let cleanupHover = null;
+let hintEl = null;
 
 function mapItem(item) {
   return {
@@ -11,6 +12,7 @@ function mapItem(item) {
     src: item.after.src,
     srcset: item.after.srcset,
     msrc: item.after.src,
+    sizes: item.after.sizes || "",
     width: item.after.w,
     height: item.after.h,
     w: item.after.w,
@@ -19,7 +21,25 @@ function mapItem(item) {
   };
 }
 
-function setVariant(index, variant) {
+function applyVariantToSlide(pswp, payload) {
+  const slide = pswp?.currSlide;
+  if (!slide || !payload) return;
+  const el = slide.content?.element;
+  if (el && el.tagName === "IMG") {
+    el.srcset = payload.srcset || "";
+    el.sizes = payload.sizes || "";
+    el.src = payload.src;
+    el.width = payload.w;
+    el.height = payload.h;
+  }
+  slide.width = payload.w;
+  slide.height = payload.h;
+  slide.updateContentSize(true);
+  slide.zoomAndPanToInitial();
+  slide.applyCurrentZoomPan();
+}
+
+function setVariant(index, variant, pswp) {
   const item = items[index];
   if (!item) return;
   const payload = variant === "before" ? item.before : item.after;
@@ -27,10 +47,14 @@ function setVariant(index, variant) {
   item.display = variant;
   item.src = payload.src;
   item.srcset = payload.srcset;
+  item.sizes = payload.sizes || "";
   item.width = payload.w;
   item.height = payload.h;
   item.w = payload.w;
   item.h = payload.h;
+  if (pswp && pswp.currIndex === index) {
+    applyVariantToSlide(pswp, payload);
+  }
 }
 
 function updateToggleLabel(pswp) {
@@ -51,43 +75,50 @@ function toggleVariant(pswp) {
   const item = items[idx];
   if (!item) return;
   const next = item.display === "before" ? "after" : "before";
-  setVariant(idx, next);
-  pswp.refreshSlideContent(idx);
+  setVariant(idx, next, pswp);
   updateToggleLabel(pswp);
 }
 
 function setHoverVariant(pswp, variant) {
   if (!pswp) return;
   const idx = pswp.currIndex;
-  setVariant(idx, variant);
-  pswp.refreshSlideContent(idx);
+  setVariant(idx, variant, pswp);
   updateToggleLabel(pswp);
 }
 
 function bindHover(pswp) {
   if (cleanupHover) cleanupHover();
-  const root = pswp?.element;
-  if (!root) return;
+  const imgEl = pswp?.currSlide?.content?.element;
+  if (!imgEl) return;
 
   const onEnter = (ev) => {
     if (ev.pointerType === "mouse") setHoverVariant(pswp, "before");
+    if (hintEl) hintEl.classList.add("is-hidden");
   };
   const onLeave = (ev) => {
     if (ev.pointerType === "mouse") setHoverVariant(pswp, "after");
   };
 
-  root.addEventListener("pointerenter", onEnter);
-  root.addEventListener("pointermove", onEnter);
-  root.addEventListener("pointerleave", onLeave);
+  imgEl.addEventListener("pointerenter", onEnter);
+  imgEl.addEventListener("pointerleave", onLeave);
 
   cleanupHover = () => {
-    root.removeEventListener("pointerenter", onEnter);
-    root.removeEventListener("pointermove", onEnter);
-    root.removeEventListener("pointerleave", onLeave);
+    imgEl.removeEventListener("pointerenter", onEnter);
+    imgEl.removeEventListener("pointerleave", onLeave);
     cleanupHover = null;
   };
 
   pswp.on("destroy", () => cleanupHover && cleanupHover());
+}
+
+function ensureHint(pswp) {
+  if (hintEl) return;
+  const wrapper = pswp?.scrollWrap;
+  if (!wrapper) return;
+  hintEl = document.createElement("div");
+  hintEl.className = "pswp-hover-hint";
+  hintEl.textContent = "Hover to see Before";
+  wrapper.appendChild(hintEl);
 }
 
 export function initLightbox(data = []) {
@@ -133,14 +164,15 @@ export function initLightbox(data = []) {
   lightbox.on("afterInit", () => {
     const pswp = lightbox.pswp;
     updateToggleLabel(pswp);
+    ensureHint(pswp);
     bindHover(pswp);
   });
   lightbox.on("change", () => {
     const pswp = lightbox.pswp;
+    if (hintEl) hintEl.classList.remove("is-hidden");
     const idx = pswp.currIndex;
     if (items[idx] && items[idx].display !== "after") {
-      setVariant(idx, "after");
-      pswp.refreshSlideContent(idx);
+      setVariant(idx, "after", pswp);
     }
     updateToggleLabel(pswp);
     bindHover(pswp);

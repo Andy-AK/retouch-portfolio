@@ -17,6 +17,7 @@
   };
 
   let vanta = null;
+  let attempts = 0;
 
   const prefersReducedMotion = () =>
     window.matchMedia &&
@@ -42,7 +43,10 @@
     }
 
     if (!window.VANTA || !window.VANTA.CELLS) {
-      window.setTimeout(initVanta, 150);
+      if (attempts < 10) {
+        attempts += 1;
+        window.setTimeout(initVanta, 200);
+      }
       return;
     }
 
