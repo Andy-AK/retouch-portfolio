@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Andrew Kievskiy — Retouching Portfolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/vendor/photoswipe/photoswipe.css">
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <header class="site-header" id="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="#home" aria-label="Back to top">
+        <span class="brand-icon-slot" aria-hidden="true">
+          <span class="brand-icon"></span>
+        </span>
+        <span class="brand-text">
+          <span class="brand-name" data-brand-name>ANDREW KIEVSKIY</span>
+          <span class="brand-subtitle" data-brand-subtitle>RETOUCHING</span>
+        </span>
+      </a>
+      <button class="nav-toggle" type="button" aria-label="Toggle navigation" aria-expanded="false">
+        <span class="nav-toggle-box">
+          <span class="nav-toggle-inner"></span>
+        </span>
+      </button>
+      <nav class="site-nav" aria-label="Main">
+        <ul class="nav-list" data-nav-list>
+          <li><a class="nav-link" href="#home" data-nav-target="home">Home</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section id="home" class="hero" data-section>
+      <div id="home-hero" aria-hidden="true"></div>
+      <div class="hero-fallback"></div>
+      <div class="hero-content container">
+        <div class="hero-text">
+          <p class="hero-eyebrow" data-brand-subtitle>RETOUCHING</p>
+          <h1 class="hero-title" data-brand-name>ANDREW KIEVSKIY</h1>
+          <p class="hero-tagline" data-home-tagline>Clean • Premium • Motion</p>
+        </div>
+        <div class="scroll-hint" aria-hidden="true">
+          <span class="scroll-dot"></span>
+          <span class="scroll-label">Scroll</span>
+        </div>
+      </div>
+    </section>
+
+    <div class="section-container" id="sections"></div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner" data-footer>
+      <p class="footer-title">Let&apos;s connect</p>
+      <div class="footer-links" data-footer-links>
+        <a class="footer-link" href="https://www.upwork.com/freelancers/andrewkievskiy" target="_blank" rel="noreferrer noopener">Upwork</a>
+        <a class="footer-link" href="https://www.linkedin.com/in/andrii-kyivskyi-8381a63a2/" target="_blank" rel="noreferrer noopener">LinkedIn</a>
+      </div>
+    </div>
+  </footer>
+
+  <noscript>
+    <div class="noscript">
+      Включите JavaScript, чтобы увидеть сетку работ и лайтбокс.
+    </div>
+  </noscript>
+
+  <script src="assets/vendor/vanta/three.min.js"></script>
+  <script src="assets/vendor/vanta/vanta.cells.min.js"></script>
+  <script src="assets/js/vanta-hero.js" defer></script>
+  <script type="module" src="assets/js/gallery.js"></script>
+  <script type="module" src="assets/js/main.js"></script>
+</body>
+</html>

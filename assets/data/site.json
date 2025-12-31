@@ -1,0 +1,50 @@
+{
+  "brandName": "ANDREW KIEVSKIY",
+  "brandSubtitle": "RETOUCHING",
+  "homeTagline": "Clean • Premium • Motion",
+  "contacts": {
+    "email": "hello@andrewkievskiy.com",
+    "links": [
+      {
+        "label": "Upwork",
+        "url": "https://www.upwork.com/freelancers/andrewkievskiy"
+      },
+      {
+        "label": "LinkedIn",
+        "url": "https://www.linkedin.com/in/andrii-kyivskyi-8381a63a2/"
+      }
+    ]
+  },
+  "sections": [
+    {
+      "id": "product",
+      "title": "Product",
+      "tagline": "Clean • Detail • Precision",
+      "desktopCols": 4
+    },
+    {
+      "id": "fashion",
+      "title": "Fashion",
+      "tagline": "Editorial • Skin • Fabric",
+      "desktopCols": 4
+    },
+    {
+      "id": "cinematic",
+      "title": "Cinematic",
+      "tagline": "Color Grading • Atmosphere • Light",
+      "desktopCols": 3
+    },
+    {
+      "id": "compositing",
+      "title": "Compositing",
+      "tagline": "Integration • Realism • Depth",
+      "desktopCols": 4
+    },
+    {
+      "id": "ai",
+      "title": "AI-Assisted",
+      "tagline": "Generative • Seamless • Realism",
+      "desktopCols": 4
+    }
+  ]
+}

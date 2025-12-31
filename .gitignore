@@ -1,0 +1,6 @@
+# System
+.DS_Store
+
+# Dependencies / caches (reserved)
+node_modules
+.cache
