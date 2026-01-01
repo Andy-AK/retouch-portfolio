@@ -43,14 +43,6 @@ function renderFooter(contacts) {
   if (!footerLinksEl) return;
   footerLinksEl.innerHTML = "";
 
-  if (contacts?.email) {
-    const mail = document.createElement("a");
-    mail.className = "footer-link";
-    mail.href = `mailto:${contacts.email}`;
-    mail.textContent = contacts.email;
-    footerLinksEl.appendChild(mail);
-  }
-
   (contacts?.links || []).forEach((link) => {
     const a = document.createElement("a");
     a.className = "footer-link";
