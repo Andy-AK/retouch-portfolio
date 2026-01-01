@@ -480,11 +480,6 @@ body.nav-open .nav-toggle-inner::after {
   letter-spacing: 0.02em;
   border: 1px solid var(--border);
   pointer-events: none;
-  transition: opacity 0.2s ease;
-}
-
-.pswp-hover-hint.is-hidden {
-  opacity: 0;
 }
 
 @media (hover: none) {

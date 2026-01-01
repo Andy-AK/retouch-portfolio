@@ -93,7 +93,6 @@ function bindHover(pswp) {
 
   const onEnter = (ev) => {
     if (ev.pointerType === "mouse") setHoverVariant(pswp, "before");
-    if (hintEl) hintEl.classList.add("is-hidden");
   };
   const onLeave = (ev) => {
     if (ev.pointerType === "mouse") setHoverVariant(pswp, "after");
@@ -112,7 +111,7 @@ function bindHover(pswp) {
 }
 
 function ensureHint(pswp) {
-  if (hintEl) return;
+  if (hintEl && document.body.contains(hintEl)) return;
   const wrapper = pswp?.scrollWrap;
   if (!wrapper) return;
   hintEl = document.createElement("div");
@@ -164,12 +163,16 @@ export function initLightbox(data = []) {
   lightbox.on("afterInit", () => {
     const pswp = lightbox.pswp;
     updateToggleLabel(pswp);
+    hintEl = null;
     ensureHint(pswp);
     bindHover(pswp);
+    pswp.on("destroy", () => {
+      if (hintEl && hintEl.parentNode) hintEl.parentNode.removeChild(hintEl);
+      hintEl = null;
+    });
   });
   lightbox.on("change", () => {
     const pswp = lightbox.pswp;
-    if (hintEl) hintEl.classList.remove("is-hidden");
     const idx = pswp.currIndex;
     if (items[idx] && items[idx].display !== "after") {
       setVariant(idx, "after", pswp);
