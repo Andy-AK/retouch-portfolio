@@ -8,12 +8,11 @@
     gyroControls: false,
     minHeight: 200.0,
     minWidth: 200.0,
-    scale: 1.0,
-    scaleMobile: 1.0,
-    color1: 0x2d3c52,
-    color2: 0x17192d,
-    size: 2.7,
-    speed: 0.9,
+    highlightColor: 0x0e132a,
+    midtoneColor: 0x0f1920,
+    lowlightColor: 0x121c28,
+    baseColor: 0x222c41,
+    zoom: 0.6,
   };
 
   let vanta = null;
@@ -42,7 +41,7 @@
       return;
     }
 
-    if (!window.VANTA || !window.VANTA.CELLS) {
+    if (!window.VANTA || !window.VANTA.FOG) {
       if (attempts < 10) {
         attempts += 1;
         window.setTimeout(initVanta, 200);
@@ -51,7 +50,7 @@
     }
 
     destroyVanta();
-    vanta = window.VANTA.CELLS(VANTA_OPTIONS);
+    vanta = window.VANTA.FOG(VANTA_OPTIONS);
   }
 
   document.addEventListener("DOMContentLoaded", initVanta);
