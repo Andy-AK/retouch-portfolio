@@ -39,7 +39,7 @@ function applyVariantToSlide(pswp, payload) {
   slide.applyCurrentZoomPan();
 }
 
-function setVariant(index, variant, pswp) {
+function setVariant(index, variant, pswp, refresh = false) {
   const item = items[index];
   if (!item) return;
   const payload = variant === "before" ? item.before : item.after;
@@ -53,6 +53,9 @@ function setVariant(index, variant, pswp) {
   item.w = payload.w;
   item.h = payload.h;
   if (pswp && pswp.currIndex === index) {
+    if (refresh) {
+      pswp.refreshSlideContent(index);
+    }
     applyVariantToSlide(pswp, payload);
   }
 }
@@ -75,14 +78,14 @@ function toggleVariant(pswp) {
   const item = items[idx];
   if (!item) return;
   const next = item.display === "before" ? "after" : "before";
-  setVariant(idx, next, pswp);
+  setVariant(idx, next, pswp, true);
   updateToggleLabel(pswp);
 }
 
 function setHoverVariant(pswp, variant) {
   if (!pswp) return;
   const idx = pswp.currIndex;
-  setVariant(idx, variant, pswp);
+  setVariant(idx, variant, pswp, false);
   updateToggleLabel(pswp);
 }
 
