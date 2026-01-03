@@ -24,6 +24,17 @@ function mapItem(item) {
 function applyVariantToSlide(pswp, payload) {
   const slide = pswp?.currSlide;
   if (!slide || !payload) return;
+
+  // keep slide data in sync for future renders
+  if (slide.data) {
+    slide.data.src = payload.src;
+    slide.data.srcset = payload.srcset;
+    slide.data.w = payload.w;
+    slide.data.h = payload.h;
+    slide.data.width = payload.w;
+    slide.data.height = payload.h;
+  }
+
   const el = slide.content?.element;
   if (el && el.tagName === "IMG") {
     el.srcset = payload.srcset || "";
@@ -37,6 +48,7 @@ function applyVariantToSlide(pswp, payload) {
   slide.updateContentSize(true);
   slide.zoomAndPanToInitial();
   slide.applyCurrentZoomPan();
+  pswp.updateSize(true);
 }
 
 function setVariant(index, variant, pswp, refresh = false) {
