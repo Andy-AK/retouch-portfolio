@@ -3,6 +3,7 @@ import PhotoSwipeLightbox from "../vendor/photoswipe/photoswipe-lightbox.esm.js"
 let lightbox = null;
 let items = [];
 let toggleButton = null;
+let mobileToggle = null;
 let cleanupHover = null;
 let hintEl = null;
 
@@ -77,9 +78,13 @@ function setVariant(index, variant, pswp, refresh = false) {
 function updateToggleLabel(pswp) {
   if (!toggleButton || !pswp) return;
   const state = items[pswp.currIndex]?.display || "after";
-  toggleButton.textContent = state === "before" ? "After" : "Before";
-  toggleButton.setAttribute("data-state", state);
-  toggleButton.setAttribute("aria-pressed", state === "before" ? "true" : "false");
+  const label = state === "before" ? "After" : "Before";
+  [toggleButton, mobileToggle].forEach((btn) => {
+    if (!btn) return;
+    btn.textContent = label;
+    btn.setAttribute("data-state", state);
+    btn.setAttribute("aria-pressed", state === "before" ? "true" : "false");
+  });
 }
 
 function resetAll() {
@@ -172,6 +177,21 @@ export function initLightbox(data = []) {
       onClick: (_event, pswp) => toggleVariant(pswp),
       onInit: (el) => {
         toggleButton = el;
+      },
+    });
+
+    lightbox.pswp.ui.registerElement({
+      name: "mobileBeforeAfter",
+      ariaLabel: "Toggle before/after",
+      order: 10,
+      isButton: true,
+      html: "Before",
+      appendTo: "bar",
+      onClick: (_event, pswp) => toggleVariant(pswp),
+      onInit: (el, pswp) => {
+        mobileToggle = el;
+        el.classList.add("pswp__button--mobile-toggle");
+        updateToggleLabel(pswp);
       },
     });
   });
