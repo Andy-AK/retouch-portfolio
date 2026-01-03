@@ -495,35 +495,56 @@ body.nav-open .nav-toggle-inner::after {
   }
 }
 
-.pswp__button--toggle-ba {
-  display: none !important;
-}
-
 .pswp__top-bar {
   padding-right: env(safe-area-inset-right);
   padding-left: env(safe-area-inset-left);
 }
 
-@media (max-width: 768px) {
+/* PhotoSwipe: BEFORE/AFTER toggle — mobile only (touch devices) */
+@media (hover: none) and (pointer: coarse) {
   .pswp__button--toggle-ba {
-    width: auto !important;
-    padding: 0 14px !important;
-    white-space: nowrap;
+    display: inline-flex !important;
+
+    height: 34px;
+    min-height: 34px;
+    padding: 6px 10px;
+
+    font-size: 12px;
+    font-weight: 600;
     line-height: 1;
-    display: inline-flex;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+
+    color: #fff !important;
+    -webkit-text-fill-color: #fff;
+
+    white-space: nowrap;
     align-items: center;
     justify-content: center;
-    border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.35);
+
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.30);
+    background: rgba(0, 0, 0, 0.35);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    display: inline-flex !important;
+  }
+
+  /* safe-area so it doesn't get clipped (iPhone notch, etc.) */
+  .pswp__top-bar {
+    padding-top: max(env(safe-area-inset-top), 8px);
+    padding-left: max(env(safe-area-inset-left), 8px);
+    padding-right: max(env(safe-area-inset-right), 8px);
   }
 }
 
-@media (hover: hover) and (pointer: fine) {
+/* Landscape on mobile: make even more compact to fit */
+@media (hover: none) and (pointer: coarse) and (orientation: landscape) {
   .pswp__button--toggle-ba {
-    display: none !important;
+    height: 30px;
+    min-height: 30px;
+    padding: 5px 8px;
+    font-size: 11px;
+    border-radius: 9px;
   }
 }
 @media (max-width: 1100px) {
