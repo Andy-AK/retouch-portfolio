@@ -88,8 +88,6 @@ function createLightboxItem(work) {
   return {
     id: work.id,
     alt: work.alt,
-    srcAfter: work.fullAfter.largest.src,
-    srcBefore: work.fullBefore.largest.src,
     after,
     before,
     display: "after",
