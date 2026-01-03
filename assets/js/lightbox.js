@@ -9,7 +9,9 @@ let hintEl = null;
 function mapItem(item) {
   return {
     ...item,
-    src: item.after.src,
+    src: item.srcAfter || item.after.src,
+    srcAfter: item.srcAfter || item.after.src,
+    srcBefore: item.srcBefore || item.before.src,
     srcset: item.after.srcset,
     msrc: item.after.src,
     sizes: item.after.sizes || "",
@@ -195,37 +197,38 @@ export function initLightbox(data = []) {
           if (!slide.data._srcAfter) {
             slide.data._srcAfter = slide.data.srcAfter || slide.data.after || slide.data.src;
           }
-          if (!slide.data._srcBefore) {
-            slide.data._srcBefore = slide.data.srcBefore || slide.data.before;
-          }
+      if (!slide.data._srcBefore) {
+        slide.data._srcBefore = slide.data.srcBefore || slide.data.before;
+      }
 
-          if (!slide.data._variant) slide.data._variant = "after";
-          el.textContent = slide.data._variant === "after" ? "BEFORE" : "AFTER";
-        };
+      if (!slide.data._variant) slide.data._variant = "after";
+      el.textContent = slide.data._variant === "after" ? "BEFORE" : "AFTER";
+    };
 
-        pswp.on("afterInit", ensureSources);
-        pswp.on("change", ensureSources);
-      },
-      onClick: (e, el, pswp) => {
-        e.preventDefault();
+    pswp.on("afterInit", ensureSources);
+    pswp.on("change", ensureSources);
+  },
+  onClick: (e, el, pswp) => {
+    e.preventDefault();
 
-        const slide = pswp.currSlide;
-        if (!slide) return;
+    const slide = pswp.currSlide;
+    if (!slide) return;
 
-        if (!slide.data._srcAfter) slide.data._srcAfter = slide.data.srcAfter || slide.data.after || slide.data.src;
-        if (!slide.data._srcBefore) slide.data._srcBefore = slide.data.srcBefore || slide.data.before;
+    if (!slide.data._srcAfter) slide.data._srcAfter = slide.data.srcAfter || slide.data.after || slide.data.src;
+    if (!slide.data._srcBefore) slide.data._srcBefore = slide.data.srcBefore || slide.data.before;
 
-        if (!slide.data._srcBefore) return;
+    if (!slide.data._srcBefore) return;
 
-        slide.data._variant = slide.data._variant === "after" ? "before" : "after";
+    slide.data._variant = slide.data._variant === "after" ? "before" : "after";
 
-        slide.data.src = slide.data._variant === "before" ? slide.data._srcBefore : slide.data._srcAfter;
+    slide.data.src = slide.data._variant === "before" ? slide.data._srcBefore : slide.data._srcAfter;
 
-        pswp.refreshSlideContent(slide.index);
+    pswp.refreshSlideContent(slide.index);
+    pswp.updateSize(true);
 
-        el.textContent = slide.data._variant === "after" ? "BEFORE" : "AFTER";
-      },
-    });
+    el.textContent = slide.data._variant === "after" ? "BEFORE" : "AFTER";
+  },
+});
   });
 
   lightbox.on("beforeOpen", resetAll);
