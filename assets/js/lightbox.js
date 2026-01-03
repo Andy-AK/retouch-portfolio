@@ -67,8 +67,10 @@ function setVariant(index, variant, pswp, refresh = false) {
   if (pswp && pswp.currIndex === index) {
     if (refresh) {
       pswp.refreshSlideContent(index);
+      pswp.currSlide && applyVariantToSlide(pswp, payload);
+    } else {
+      applyVariantToSlide(pswp, payload);
     }
-    applyVariantToSlide(pswp, payload);
   }
 }
 
