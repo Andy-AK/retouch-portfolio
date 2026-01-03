@@ -500,51 +500,62 @@ body.nav-open .nav-toggle-inner::after {
   padding-left: env(safe-area-inset-left);
 }
 
-/* PhotoSwipe: BEFORE/AFTER toggle — mobile only (touch devices) */
+/* default: never show toggle unless touch */
+.pswp__button--toggle-ba {
+  display: none !important;
+}
+
+/* Touch devices (iOS/Android), portrait & landscape */
 @media (hover: none) and (pointer: coarse) {
+  .pswp__top-bar {
+    display: flex;
+    align-items: center;
+    padding-left: calc(32px + env(safe-area-inset-left));
+    padding-right: calc(12px + env(safe-area-inset-right));
+    padding-top: max(env(safe-area-inset-top), 8px);
+    gap: 12px;
+  }
+
+  .pswp__counter {
+    display: inline-flex;
+    align-items: center;
+    line-height: 1;
+    height: 32px;
+    margin-right: auto;
+  }
+
   .pswp__button--toggle-ba {
     display: inline-flex !important;
-
-    height: 34px;
-    min-height: 34px;
-    padding: 6px 10px;
-
-    font-size: 12px;
-    font-weight: 600;
-    line-height: 1;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-
-    color: #fff !important;
-    -webkit-text-fill-color: #fff;
-
-    white-space: nowrap;
     align-items: center;
     justify-content: center;
 
+    height: 32px;
+    min-height: 32px;
+    padding: 0 18px;
+    min-width: 96px;
+    margin-right: 10px;
+    transform: translateY(6px);
+
     border-radius: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.30);
-    background: rgba(0, 0, 0, 0.35);
+
+    font-size: 12px;
+    line-height: 1;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    white-space: nowrap;
+
+    color: #fff !important;
+    border: 1px solid rgba(255, 255, 255, 0.35);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
   }
-
-  /* safe-area so it doesn't get clipped (iPhone notch, etc.) */
-  .pswp__top-bar {
-    padding-top: max(env(safe-area-inset-top), 8px);
-    padding-left: max(env(safe-area-inset-left), 8px);
-    padding-right: max(env(safe-area-inset-right), 8px);
-  }
 }
 
-/* Landscape on mobile: make even more compact to fit */
-@media (hover: none) and (pointer: coarse) and (orientation: landscape) {
+/* Desktop: always hide */
+@media (hover: hover) and (pointer: fine) {
   .pswp__button--toggle-ba {
-    height: 30px;
-    min-height: 30px;
-    padding: 5px 8px;
-    font-size: 11px;
-    border-radius: 9px;
+    display: none !important;
   }
 }
 @media (max-width: 1100px) {
