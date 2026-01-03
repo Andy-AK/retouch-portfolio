@@ -516,12 +516,17 @@ body.nav-open .nav-toggle-inner::after {
     gap: 12px;
   }
 
+  .pswp__top-bar > * {
+    align-self: center;
+  }
+
   .pswp__counter {
     display: inline-flex;
     align-items: center;
     line-height: 1;
     height: 32px;
     margin-right: auto;
+    transform: translateY(-8px);
   }
 
   .pswp__button--toggle-ba {
@@ -534,7 +539,6 @@ body.nav-open .nav-toggle-inner::after {
     padding: 0 18px;
     min-width: 96px;
     margin-right: 10px;
-    transform: translateY(6px);
 
     border-radius: 10px;
 
