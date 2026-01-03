@@ -9,7 +9,9 @@ let hintEl = null;
 function mapItem(item) {
   return {
     ...item,
-    src: item.after.src,
+    src: item.srcAfter || item.after.src,
+    srcAfter: item.srcAfter || item.after.src,
+    srcBefore: item.srcBefore || item.before.src,
     srcset: item.after.srcset,
     msrc: item.after.src,
     sizes: item.after.sizes || "",
@@ -100,16 +102,28 @@ function resetAll() {
 
 function toggleVariant(pswp) {
   if (!pswp) return;
-  const idx = pswp.currIndex;
-  const item = items[idx];
-  if (!item) return;
-  const current =
-    item._variant ||
-    item.display ||
-    (pswp.currSlide?.data && pswp.currSlide.data._variant) ||
-    "after";
-  const next = current === "before" ? "after" : "before";
-  setVariant(idx, next, pswp, true);
+  const slide = pswp.currSlide;
+  if (!slide) return;
+  const d = slide.data;
+
+  d._srcAfter = d._srcAfter || d.srcAfter || d.after || d.src;
+  d._srcBefore = d._srcBefore || d.srcBefore || d.before;
+  if (!d._srcAfter || !d._srcBefore) return;
+
+  const nextVariant = d._variant === "before" ? "after" : "before";
+  const nextSrc = nextVariant === "before" ? d._srcBefore : d._srcAfter;
+  d._variant = nextVariant;
+  d.src = nextSrc;
+
+  const imgEl = slide.content?.element;
+  if (imgEl && imgEl.tagName === "IMG") {
+    imgEl.removeAttribute("srcset");
+    imgEl.removeAttribute("sizes");
+    imgEl.src = nextSrc;
+  }
+
+  pswp.refreshSlideContent(slide.index);
+  pswp.updateSize(true);
   updateToggleLabel(pswp);
 }
 
