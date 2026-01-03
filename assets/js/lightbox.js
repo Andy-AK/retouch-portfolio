@@ -10,6 +10,8 @@ function mapItem(item) {
   return {
     ...item,
     src: item.after.src,
+    srcAfter: item.after.src,
+    srcBefore: item.before.src,
     srcset: item.after.srcset,
     msrc: item.after.src,
     sizes: item.after.sizes || "",
@@ -18,6 +20,7 @@ function mapItem(item) {
     w: item.after.w,
     h: item.after.h,
     display: "after",
+    _variant: "after",
   };
 }
 
@@ -57,6 +60,7 @@ function setVariant(index, variant, pswp, refresh = false) {
   const payload = variant === "before" ? item.before : item.after;
   if (!payload) return;
   item.display = variant;
+  item._variant = variant;
   item.src = payload.src;
   item.srcset = payload.srcset;
   item.sizes = payload.sizes || "";
@@ -65,6 +69,10 @@ function setVariant(index, variant, pswp, refresh = false) {
   item.w = payload.w;
   item.h = payload.h;
   if (pswp && pswp.currIndex === index) {
+    const slide = pswp.currSlide;
+    if (slide?.data) {
+      slide.data._variant = variant;
+    }
     if (refresh) {
       pswp.refreshSlideContent(index);
       pswp.currSlide && applyVariantToSlide(pswp, payload);
@@ -76,8 +84,13 @@ function setVariant(index, variant, pswp, refresh = false) {
 
 function updateToggleLabel(pswp) {
   if (!toggleButton || !pswp) return;
-  const state = items[pswp.currIndex]?.display || "after";
-  const label = state === "before" ? "After" : "Before";
+  const slide = pswp.currSlide;
+  const state =
+    slide?.data?._variant ||
+    items[pswp.currIndex]?._variant ||
+    items[pswp.currIndex]?.display ||
+    "after";
+  const label = state === "before" ? "AFTER" : "BEFORE";
   toggleButton.textContent = label;
   toggleButton.setAttribute("data-state", state);
   toggleButton.setAttribute("aria-pressed", state === "before" ? "true" : "false");
@@ -92,7 +105,12 @@ function toggleVariant(pswp) {
   const idx = pswp.currIndex;
   const item = items[idx];
   if (!item) return;
-  const next = item.display === "before" ? "after" : "before";
+  const current =
+    item._variant ||
+    item.display ||
+    (pswp.currSlide?.data && pswp.currSlide.data._variant) ||
+    "after";
+  const next = current === "before" ? "after" : "before";
   setVariant(idx, next, pswp, true);
   updateToggleLabel(pswp);
 }
@@ -165,17 +183,38 @@ export function initLightbox(data = []) {
 
   lightbox.on("uiRegister", () => {
     lightbox.pswp.ui.registerElement({
-      name: "beforeAfterToggle",
+      name: "toggle-before-after",
       ariaLabel: "Toggle before/after",
       order: 9,
       isButton: true,
-      html: "Before",
-      onClick: (_event, pswp) => toggleVariant(pswp),
-      onInit: (el) => {
+      tagName: "button",
+      className: "pswp__button pswp__button--toggle-ba",
+      html: "BEFORE",
+      onInit: (el, pswp) => {
         toggleButton = el;
+        const sync = () => {
+          const slide = pswp.currSlide;
+          if (!slide) return;
+          if (!slide.data._variant) slide.data._variant = "after";
+          if (items[pswp.currIndex] && !items[pswp.currIndex]._variant) {
+            items[pswp.currIndex]._variant = "after";
+          }
+          updateToggleLabel(pswp);
+        };
+        pswp.on("change", sync);
+        pswp.on("afterInit", sync);
+      },
+      onClick: (e, _el, pswp) => {
+        e.preventDefault();
+        const slide = pswp.currSlide;
+        if (!slide) return;
+        const hasBefore = !!slide.data?.srcBefore;
+        const hasAfter = !!slide.data?.srcAfter;
+        if (!hasBefore || !hasAfter) return;
+        toggleVariant(pswp);
+        updateToggleLabel(pswp);
       },
     });
-
   });
 
   lightbox.on("beforeOpen", resetAll);
