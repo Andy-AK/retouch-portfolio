@@ -101,27 +101,13 @@ function resetAll() {
 }
 
 function toggleVariant(pswp) {
+  // deprecated old toggle (kept for hover)
   if (!pswp) return;
   const slide = pswp.currSlide;
   if (!slide) return;
   const d = slide.data;
-
-  d._srcAfter = d._srcAfter || d.srcAfter || d.after || d.src;
-  d._srcBefore = d._srcBefore || d.srcBefore || d.before;
-  if (!d._srcAfter || !d._srcBefore) return;
-
-  const nextVariant = d._variant === "before" ? "after" : "before";
-  const nextSrc = nextVariant === "before" ? d._srcBefore : d._srcAfter;
-  d._variant = nextVariant;
-  d.src = nextSrc;
-
-  const imgEl = slide.content?.element;
-  if (imgEl && imgEl.tagName === "IMG") {
-    imgEl.removeAttribute("srcset");
-    imgEl.removeAttribute("sizes");
-    imgEl.src = nextSrc;
-  }
-
+  d._showBefore = !d._showBefore;
+  d.src = d._showBefore ? d._srcBefore || d.beforeSrc : d._srcAfter || d.afterSrc || d.src;
   pswp.refreshSlideContent(slide.index);
   pswp.updateSize(true);
   updateToggleLabel(pswp);
@@ -193,7 +179,29 @@ export function initLightbox(data = []) {
     bgOpacity: 0.92,
   });
 
+  lightbox.addFilter("itemData", (itemData, element) => {
+    const after = element?.dataset?.after || itemData.srcAfter || itemData.src;
+    const before = element?.dataset?.before || itemData.srcBefore;
+    if (after) {
+      itemData.afterSrc = after;
+      itemData.src = after;
+    }
+    if (before) {
+      itemData.beforeSrc = before;
+    }
+    itemData._showBefore = false;
+    itemData._variant = "after";
+    return itemData;
+  });
+
+  const isTouchDevice =
+    typeof window !== "undefined" &&
+    window.matchMedia &&
+    window.matchMedia("(hover: none) and (pointer: coarse)").matches;
+
   lightbox.on("uiRegister", function () {
+    if (!isTouchDevice) return;
+
     lightbox.pswp.ui.registerElement({
       name: "toggle-before-after",
       isButton: true,
@@ -202,42 +210,30 @@ export function initLightbox(data = []) {
       html: "BEFORE",
       onInit: (el, pswp) => {
         toggleButton = el;
-        const ensureSources = () => {
-          const slide = pswp.currSlide;
-          if (!slide) return;
 
-          if (!slide.data._srcAfter) {
-            slide.data._srcAfter = slide.data.srcAfter || slide.data.after || slide.data.src;
-          }
-          if (!slide.data._srcBefore) {
-            slide.data._srcBefore = slide.data.srcBefore || slide.data.before;
-          }
+        const sync = () => updateToggleLabel(pswp);
 
-          if (!slide.data._variant) slide.data._variant = "after";
-          el.textContent = slide.data._variant === "after" ? "BEFORE" : "AFTER";
-        };
-
-        pswp.on("afterInit", ensureSources);
-        pswp.on("change", ensureSources);
+        pswp.on("afterInit", sync);
+        pswp.on("change", sync);
       },
+
       onClick: (e, el, pswp) => {
         e.preventDefault();
+        if (!pswp) return;
 
-        const slide = pswp.currSlide;
-        if (!slide) return;
+        const idx = pswp.currIndex;
 
-        if (!slide.data._srcAfter) slide.data._srcAfter = slide.data.srcAfter || slide.data.after || slide.data.src;
-        if (!slide.data._srcBefore) slide.data._srcBefore = slide.data.srcBefore || slide.data.before;
+        const current =
+          pswp.currSlide?.data?._variant ||
+          items[idx]?._variant ||
+          items[idx]?.display ||
+          "after";
 
-        if (!slide.data._srcBefore) return;
+        const next = current === "before" ? "after" : "before";
 
-        slide.data._variant = slide.data._variant === "after" ? "before" : "after";
+        setVariant(idx, next, pswp, true);
 
-        slide.data.src = slide.data._variant === "before" ? slide.data._srcBefore : slide.data._srcAfter;
-
-        pswp.refreshSlideContent(slide.index);
-
-        el.textContent = slide.data._variant === "after" ? "BEFORE" : "AFTER";
+        updateToggleLabel(pswp);
       },
     });
   });

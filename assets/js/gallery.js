@@ -103,6 +103,8 @@ function createWorkCard(work, lightboxIndex) {
   card.setAttribute("tabindex", "0");
   card.setAttribute("data-lightbox-index", lightboxIndex);
   card.setAttribute("aria-label", `${work.alt} — open lightbox`);
+  card.dataset.after = work.fullAfter.largest.src;
+  card.dataset.before = work.fullBefore.largest.src;
 
   const afterSrcset = createSrcset(work.previewAfter.sources);
   const { width, height } = ratioSizeFromAspect(
