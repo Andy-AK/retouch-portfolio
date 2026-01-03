@@ -496,16 +496,31 @@ body.nav-open .nav-toggle-inner::after {
 }
 
 .pswp__button--toggle-ba {
-  font-size: 14px;
+  width: auto !important;
+  min-width: 64px;
+  padding: 0 12px;
+  font-size: 12px;
   font-weight: 600;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
   color: var(--text);
-  padding: 6px 10px;
   border-radius: 10px;
   background: rgba(0, 0, 0, 0.35);
   border: 1px solid rgba(255, 255, 255, 0.25);
 }
 
+.pswp__top-bar {
+  padding-right: env(safe-area-inset-right);
+  padding-left: env(safe-area-inset-left);
+}
+
+@media (max-width: 420px) {
+  .pswp__button--toggle-ba {
+    min-width: 56px;
+    padding: 0 10px;
+    font-size: 11px;
+  }
+}
 @media (max-width: 1100px) {
   .hero-content {
     padding-top: 120px;
