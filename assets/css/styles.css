@@ -509,6 +509,10 @@ body.nav-open .nav-toggle-inner::after {
     width: auto !important;
     padding: 0 14px !important;
     white-space: nowrap;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     border-radius: 12px;
     border: 1px solid rgba(255, 255, 255, 0.35);
     backdrop-filter: blur(10px);

@@ -28,26 +28,32 @@ function applyVariantToSlide(pswp, payload) {
   const slide = pswp?.currSlide;
   if (!slide || !payload) return;
 
+  const w = payload.w || payload.width || slide.data?.w || slide.width;
+  const h = payload.h || payload.height || slide.data?.h || slide.height;
+  const src = payload.src;
+  const srcset = payload.srcset || "";
+  const sizes = payload.sizes || "";
+
   // keep slide data in sync for future renders
   if (slide.data) {
-    slide.data.src = payload.src;
-    slide.data.srcset = payload.srcset;
-    slide.data.w = payload.w;
-    slide.data.h = payload.h;
-    slide.data.width = payload.w;
-    slide.data.height = payload.h;
+    slide.data.src = src;
+    slide.data.srcset = srcset;
+    slide.data.w = w;
+    slide.data.h = h;
+    slide.data.width = w;
+    slide.data.height = h;
   }
 
   const el = slide.content?.element;
   if (el && el.tagName === "IMG") {
-    el.srcset = payload.srcset || "";
-    el.sizes = payload.sizes || "";
-    el.src = payload.src;
-    el.width = payload.w;
-    el.height = payload.h;
+    el.srcset = srcset;
+    el.sizes = sizes;
+    el.src = src;
+    el.width = w;
+    el.height = h;
   }
-  slide.width = payload.w;
-  slide.height = payload.h;
+  slide.width = w;
+  slide.height = h;
   slide.updateContentSize(true);
   slide.zoomAndPanToInitial();
   slide.applyCurrentZoomPan();
@@ -231,7 +237,7 @@ export function initLightbox(data = []) {
 
         const next = current === "before" ? "after" : "before";
 
-        setVariant(idx, next, pswp, true);
+        setVariant(idx, next, pswp, false);
 
         updateToggleLabel(pswp);
       },
